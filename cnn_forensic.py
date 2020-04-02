@@ -6,14 +6,14 @@ Such can be done using creation_data.py and prepare_data.py.
 As input, we use CWT.
 """
 
-import matplotlib.pyplot				          	  as plt
-import numpy                              		 	  as np
+import matplotlib.pyplot as plt
+import numpy as np
 import os
-from tensorflow.keras 						 	      import optimizers, layers
-from tensorflow.keras.models 			        	  import Sequential, model_from_json
-from tensorflow.keras.layers 			              import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
-from tensorflow.keras.preprocessing.image             import ImageDataGenerator
-from sklearn.metrics                      			  import confusion_matrix
+from tensorflow.keras import optimizers, layers
+from tensorflow.keras.models import Sequential, model_from_json
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import confusion_matrix
 
 train_dir = "C:/Users/MIG/Desktop/cnntrain/traindata/train"
 valid_dir = "C:/Users/MIG/Desktop/cnntrain/traindata/validate"
