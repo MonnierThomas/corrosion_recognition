@@ -1,0 +1,28 @@
+driver = webdriver.Chrome()
+text = 'corrosion'
+url = "https://www.google.co.in/search?q="+text+"&source=lnms&tbm=isch"
+url2 = "https://www.bing.com/images/search?view=detailV2&ccid=b506kYHu&id=8995A69B8317802E05ADFA666BBE1D47AE8BE759&thid=OIP.b506kYHuX8vebAacnRTCSAHaF2&mediaurl=https%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fthumb%2fb%2fbb%2fRust_and_dirt.jpg%2f1200px-Rust_and_dirt.jpg&exph=948&expw=1200&q=corrosion&simid=608005057609138268&selectedIndex=0"
+driver.get(url2)
+headers = {}
+headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+extensions = {"jpg", "jpeg", "png", "gif"}
+download_path = "C:/Users/Ambro/Documents/Informatique/di-africa/"
+
+req = urllib.request.Request(url2, headers=headers)
+raw_img = urllib.request.urlopen(req).read()
+f = open(download_path+"corrosion")
+f.write(raw_img)
+f.close
+
+
+
+#driver.find_element_by_xpath("//input[@value='afficher plus de résultats']").click()
+
+
+
+#imges = driver.find_elements_by_xpath("//div[@class='rg_meta']")
+#for img in imges:
+#    img_url = json.loads(img.get_attribute('innerHTML'))["ou"]
+#    img_type = json.loads(img.get_attribute('innerHTML'))["ity"]
+#    print (img_url, img_type)
+
