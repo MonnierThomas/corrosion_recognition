@@ -9,7 +9,7 @@ def dimension(N):
     H = []
     
     for i in range(N):
-        img = Image.open("image"+f"i")
+        img = Image.open(f"path/{i}.jpg")
         (w, h) = img.size
         W.append(w)
         H.append(h)
@@ -19,3 +19,5 @@ def dimension(N):
     w_min = W.min()
     h_min = H.min()
     return(w_min, h_min)
+
+print(dimension(N))
