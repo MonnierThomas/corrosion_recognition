@@ -5,7 +5,7 @@ imgpil = Image.open("chat.jpg")
 
 def dimensionnement(image, W, H, Q):
     image = image.resize((W, H),Image.ANTIALIAS)
-    image.save(f"{image}"+"new", quality=Q)
+    image.save(path+"{image}"+"new"+".jpg", quality=Q)
     #en vrai faut rajouter le path où tu veux l'enregistrer avant son nom
     
 
