@@ -18,7 +18,7 @@ def formatage(path1, path2):
     """path1 est le chemin vers le dossier regroupant les photos originales, path2 le chemin d'arrivée"""
     
     #on commence par chercher les tailles finales de nos images
-    fichiers = [f for f in listdir(path1)]
+    fichiers = [f for f in listdir(path1) if isfile(join(path1, f))]
     W = []
     H = []
     
