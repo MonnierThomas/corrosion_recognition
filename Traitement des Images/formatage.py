@@ -1,15 +1,13 @@
-
-
 from os import listdir
 from os.path import isfile, join
-
-
 
 from PIL import Image
 import pandas as pd
 
+
 def dimensionnement(image, W, H, nv_nom):
-    image = image.resize((W, H),Image.ANTIALIAS)
+    img = Image.open(image)
+    image = img.resize((W, H), Image.ANTIALIAS)
     image.save(nv_nom, quality=95)
 
 
@@ -23,7 +21,7 @@ def formatage(path1, path2):
     H = []
     
     for photo in fichiers:
-        img = Image.open(f"{photo}")
+        img = Image.open(path1 + photo)
         (w, h) = img.size
         W.append(w)
         H.append(h)
@@ -35,10 +33,8 @@ def formatage(path1, path2):
     
     i = 0
     for photo in fichiers:
-        nv_nom = path2 + f"{i}"
-        dimensionnement(photo, w_min, h_min, nv_nom)
-
-
+        nv_nom = path2 + f"{i}.jpg" 
+        dimensionnement(path1 + photo, w_min, h_min, nv_nom)
         
-
-
+        
+print(formatage(path1, path2))
