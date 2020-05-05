@@ -1,3 +1,6 @@
+path1 = 'path1'
+path2 = 'path2'
+
 from os import listdir
 from os.path import isfile, join
 
@@ -17,6 +20,7 @@ def formatage(path1, path2):
     
     #on commence par chercher les tailles finales de nos images
     fichiers = [f for f in listdir(path1) if isfile(join(path1, f))]
+    print(fichiers)
     W = []
     H = []
     
@@ -31,10 +35,10 @@ def formatage(path1, path2):
     w_min = W.min()
     h_min = H.min()
     
-    i = 0
-    for photo in fichiers:
-        nv_nom = path2 + f"{i}.jpg" 
-        dimensionnement(path1 + photo, w_min, h_min, nv_nom)
+    for index, photo in enumerate(fichiers):
+        nv_nom = f"{path1}/{index}.jpg" 
+        image = Image.open(path1 + photo)
+        dimensionnement(image, w_min, h_min, nv_nom)
         
         
 print(formatage(path1, path2))
