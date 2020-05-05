@@ -1,5 +1,5 @@
 path1 = '/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3corrosion'
-path2 = '/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3corrosion'
+path2 = '/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3'
 
 from os import listdir
 from os.path import isfile, join
@@ -19,6 +19,7 @@ def formatage(path1, path2):
     
     #on commence par chercher les tailles finales de nos images
     fichiers = [f for f in listdir(path1) if isfile(join(path1, f))]
+    fichiers.pop(0)
     #print(fichiers)
     W = []
     H = []
@@ -38,5 +39,6 @@ def formatage(path1, path2):
         nv_nom = "coucou.jpg" 
         image = Image.open(path1 +"/"+ photo)
         dimensionnement(image, w_min, h_min, nv_nom)
-        
+
+formatage(path1, path2)
     
