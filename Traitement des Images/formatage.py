@@ -41,3 +41,13 @@ def formatage(path1, path2):
         dimensionnement(image, w_min, h_min, nv_nom)
 
 formatage(path1, path2)
+
+
+#Pour windows
+#def dimensionnement(image, W, H, nv_nom):
+#    image = image.resize((W, H), Image.ANTIALIAS)
+#    if image.mode in ('RGBA', 'LA'):
+#        background = Image.new(image.mode[:-1], image.size)
+#        background.paste(image, image.split()[-1])
+#        image = background
+#    image.save(path2 + "/" + nv_nom, quality=95)
