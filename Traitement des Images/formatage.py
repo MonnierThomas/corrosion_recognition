@@ -35,10 +35,9 @@ def formatage(path1, path2):
     w_min = W.min()
     h_min = H.min()
     
-    for index, photo in enumerate(fichiers):
-        nv_nom = "coucou.jpg" 
+    for photo in fichiers:
+        nv_nom = "nouveau" +f"{photo}" +".jpg" 
         image = Image.open(path1 +"/"+ photo)
         dimensionnement(image, w_min, h_min, nv_nom)
 
 formatage(path1, path2)
-    
