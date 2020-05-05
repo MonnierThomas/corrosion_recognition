@@ -1,5 +1,5 @@
-path1 = '/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3corrosion'
-path2 = '/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3'
+path1 = '' #entry path
+path2 = '' #save path
 
 from os import listdir
 from os.path import isfile, join
