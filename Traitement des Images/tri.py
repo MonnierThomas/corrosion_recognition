@@ -1,9 +1,9 @@
 #CONSTITUTION DES BATCHS TESTS / ENTRAINEMENT
 #0,8 APPRENTISSAGE, 0,2 TEST
 
-path = "/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3/Traitement des Images/photos_formatees"
-path_corrosion = "/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3/Traitement des Images/photos_formatees/CORROSION"
-path_non_corr = "/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3/Traitement des Images/photos_formatees/NON CORROSION"
+path = "path"
+path_corrosion = "path_corrosion"
+path_non_corr = "path_non_corr"
 
 #on va faire 2 dossiers, et les séparer au sein de chaque dossier
 
