@@ -4,23 +4,23 @@ from tensorflow.keras.models import Sequential, model_from_json
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import confusion_matrix
+import numpy as np
+import matplotlib.pyplot as plt
 
-train_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_test/dossier_train"
-valid_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_test/dossier_valid"
-test_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_test/dossier_test"
-save_dir = ""
+train_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_classees/entrainement"
+valid_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_classees/validation"
+test_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_classees/test"
+save_dir = "4"
 
-batch_size = 5
-IMG_HEIGHT, IMG_WIDTH = 907, 907
-total_val = 15
+batch_size = 20
+IMG_HEIGHT, IMG_WIDTH = 256, 256
+total_val = 444
 epochs = 20
-total_train = 100
+total_train = 2822
 
 def data_preparation(train_dir = train_dir, valid_dir = valid_dir):
 	"""Formats the image into appropriately pre-processed floating point tensors before feeding to the network"""
 	train_image_generator = ImageDataGenerator(rescale=1)
-	validation_image_generator = ImageDataGenerator(rescale=1)
-	test_image_generator = ImageDataGenerator(rescale=1)
 	train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
 															   directory=train_dir,
 															   shuffle=True,
@@ -38,11 +38,17 @@ def data_preparation(train_dir = train_dir, valid_dir = valid_dir):
 def model_creation():
 	"""Computes the model, using Keras'CNN."""
 	model = Sequential()
-
+    
 	model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)))
-	model.add(MaxPooling2D((2, 2)))
+	model.add(MaxPooling2D((2, 2))) 
+       
 	model.add(Conv2D(32, (3, 3), activation='relu'))
 	model.add(MaxPooling2D((2, 2)))
+    
+       
+	model.add(Conv2D(32, (3, 3), activation='relu'))
+	model.add(MaxPooling2D((2, 2)))
+
 	model.add(Flatten())
 
 	model.add(Dense(64, activation='relu'))
@@ -89,7 +95,7 @@ def model_loading(save_dir = save_dir):
 	json_file = open('model.json', 'r') # load json and create model
 	loaded_model_json = json_file.read()
 	json_file.close()
-	loaded_model = tf.keras.models.model_from_json(loaded_model_json)
+	loaded_model = model_from_json(loaded_model_json)
 	
 	loaded_model.load_weights("model.h5") # load weights into new model
 	print("Loaded model from disk")
@@ -114,6 +120,42 @@ def prediction(model, test_dir = test_dir):
 	print(accu)
 	return predic, test_data_gen
 
+def conf_matrix(predic, classes):
+	"""Returns confusion matrix"""
+	pred = [np.argmax(i) for i in predic]
+	cm = confusion_matrix(classes, pred)
+	return cm
+
+
+def info_plotting(cm, history):
+	fig, ax = plt.subplots()
+	print(cm)
+	im = ax.imshow(cm, interpolation='nearest', cmap = plt.cm.Blues)
+	ax.figure.colorbar(im, ax=ax)
+	plt.show()
+	
+	# Plot training & validation accuracy values
+	plt.plot(history.history['accuracy'])
+	plt.plot(history.history['val_accuracy'])
+	plt.title('Model accuracy')
+	plt.ylabel('Accuracy')
+	plt.xlabel('Epoch')
+	plt.legend(['Train', 'Validate'], loc='lower right')
+	plt.show()
+
+
+	# Plot training & validation loss values
+	plt.plot(history.history['loss'])
+	plt.plot(history.history['val_loss'])
+	plt.title('Model loss')
+	plt.ylabel('Loss')
+	plt.xlabel('Epoch')
+	plt.legend(['Train', 'Validate'], loc='lower right')
+	plt.show()
+
+	return 0
+
+
 def main ():
 	global history
 	train_data_gen, valid_data_gen = data_preparation()
@@ -122,7 +164,27 @@ def main ():
 	model.summary()
 	model_saving(model)
 	predic, test_data_gen = prediction(model)
+	cm = conf_matrix(predic, test_data_gen.classes)
+	info_plotting(cm, history)
 	return 0
+
+
+def predic_a_la_demande(test_path):
+    l_mod = model_loading()
+    test_image_generator = ImageDataGenerator(rescale=1)
+    test_data_gen = test_image_generator.flow_from_directory(batch_size=batch_size,
+														  directory=test_path,
+														  shuffle=False,
+														  target_size=(IMG_HEIGHT, IMG_WIDTH),
+														  class_mode='categorical')
+    predic = l_mod.predict(test_data_gen, 
+									 steps=None, 
+									 callbacks=None, 
+									 max_queue_size=10, 
+									 workers=1, 
+									 use_multiprocessing=False, 
+									 verbose=1)
+    return(predic)
 
 
 
