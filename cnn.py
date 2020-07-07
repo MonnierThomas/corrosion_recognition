@@ -7,12 +7,13 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_classees/batch5petitesimages/entrainement"
-valid_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_classees/batch5petitesimages/validation"
-test_dir = "C:/Users/ambro/Documents/Informatique/di-africa/photos_classees/batch5petitesimages/test"
-test_dir2 = "C:/Users/ambro/Documents/Informatique/di-africa/test"
+train_dir = "" # Chemin des images d'entraînement
+valid_dir = "" # Chemin des images de validation
+test_dir = ""  # Chemin des images de test
+test_dir2 = "" # Chemin des images de test 2
 save_dir = "26"
 
+# Forme et propriétés du modèle utilisé
 batch_size = 20
 IMG_HEIGHT, IMG_WIDTH = 256, 256
 total_val = 166
@@ -20,7 +21,7 @@ epochs = 20
 total_train = 699
 
 def data_preparation(train_dir = train_dir, valid_dir = valid_dir):
-	"""Formats the image into appropriately pre-processed floating point tensors before feeding to the network"""
+	"""Formate l'image en tenseurs à virgule flottante pré-traités de manière appropriée avant de les alimenter sur le réseau de neurones"""
 	train_image_generator = ImageDataGenerator(rescale=1)
 	train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
 															   directory=train_dir,
@@ -37,7 +38,7 @@ def data_preparation(train_dir = train_dir, valid_dir = valid_dir):
 
 
 def model_creation():
-    """Computes the model, using Keras'CNN."""
+    """Calcule le modèle à l'aide du CNN de Keras"""
     model = Sequential()
     
     model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)))
@@ -59,7 +60,7 @@ def model_creation():
 
 
 def model_training(model, train_data_gen, valid_data_gen):
-	"""Trains the model"""
+	"""Entraîne le modèle"""
 
 	history = model.fit_generator(train_data_gen,
 								steps_per_epoch=total_train // batch_size,
@@ -72,7 +73,7 @@ def model_training(model, train_data_gen, valid_data_gen):
 	return history
 
 def model_saving(model, save_dir = save_dir):
-	"""Saves the model"""
+	"""Sauvegarde le modèle"""
 
 	model_json = model.to_json() # serialize model to JSON
 	with open("model.json", "w") as json_file:
@@ -84,7 +85,7 @@ def model_saving(model, save_dir = save_dir):
 
 
 def model_loading(save_dir = save_dir):
-	"""Loads the model"""
+	"""Charge le modèle"""
 
 	json_file = open('model.json', 'r') # load json and create model
 	loaded_model_json = json_file.read()
@@ -96,7 +97,7 @@ def model_loading(save_dir = save_dir):
 	return loaded_model
 
 def prediction(model, test_dir = test_dir):
-	"""Tests the previous and trained model and returns prediction probalities"""
+	"""Test le précédent modèle entraîné et retourne les prédictions en probabilités"""
 	test_image_generator = ImageDataGenerator(rescale=1)
 	test_data_gen = test_image_generator.flow_from_directory(batch_size=batch_size,
 														  directory=test_dir,
@@ -114,21 +115,23 @@ def prediction(model, test_dir = test_dir):
 	print(accu)
 	return predic, test_data_gen
 
+
 def conf_matrix(predic, classes):
-	"""Returns confusion matrix"""
+	"""Retourne la matrice de confusion"""
 	pred = [np.argmax(i) for i in predic]
 	cm = confusion_matrix(classes, pred)
 	return cm
 
 
 def info_plotting(cm, history):
+	"""Trace la précision du modèle et la matrice de confusion"""
 	fig, ax = plt.subplots()
 	print(cm)
 	im = ax.imshow(cm, interpolation='nearest', cmap = plt.cm.Blues)
 	ax.figure.colorbar(im, ax=ax)
 	plt.show()
 	
-	# Plot training & validation accuracy values
+	# Trace les valeurs de précision d'entraînement et de validation
 	plt.plot(history.history['accuracy'])
 	plt.plot(history.history['val_accuracy'])
 	plt.title('Model accuracy')
@@ -138,7 +141,7 @@ def info_plotting(cm, history):
 	plt.show()
 
 
-	# Plot training & validation loss values
+	# Trace les valeurs de perte d'entraînement et de validation
 	plt.plot(history.history['loss'])
 	plt.plot(history.history['val_loss'])
 	plt.title('Model loss')
@@ -164,7 +167,7 @@ def main ():
 
 
 def predic_test(test_path=test_dir):
-    """prediction of a test batch and print the confusion matrix"""
+    """Prédiction d'un batch de test et retourne la matrice de confusion"""
     test_image_generator = ImageDataGenerator(rescale=1)
     model = model_loading()
     test_data_gen = test_image_generator.flow_from_directory(batch_size=batch_size,
@@ -187,8 +190,9 @@ def predic_test(test_path=test_dir):
     plt.show()
     return(0)
 
+
 def predic_non_test(test_path = test_dir2):
-    """prediction of an unknown batch"""
+    """Prédiction d'un batch inconnu"""
     l = model_loading()
     train_image_generator = ImageDataGenerator(rescale=1)
     test_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
