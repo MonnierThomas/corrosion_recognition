@@ -1,4 +1,4 @@
-# di-africa
+# Traitement d'images avec marques de corrosion : Di-Africa
 Projet Informatique Mines-Paristech
 
 # Contexte
