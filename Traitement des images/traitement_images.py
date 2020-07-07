@@ -201,4 +201,5 @@ def main():
     pre_tri(path_formatees)
     tri(path_formatees)
 
-
+    
+main()
