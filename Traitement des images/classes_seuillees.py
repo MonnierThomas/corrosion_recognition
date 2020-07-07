@@ -5,12 +5,12 @@ from traitement_images import dimension, formatage, symetries, pre_tri, tri
 from math import sqrt
 import numpy as np
 
-monchemin = "/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3/Traitement des Images/"
+monchemin = ""
 #répertoire où se situe mon module traitement_images
 import sys
 sys.path.append(monchemin)
 
-path = "/Users/charlotte/Desktop/Cours Mines/Informatique/Projet info 3/Traitement des Images/photos_ensembles"
+path = ""
 
 #on a calculé précédemment la médiane de la taille de nos images à 455 200 pixels
 m = 455200
