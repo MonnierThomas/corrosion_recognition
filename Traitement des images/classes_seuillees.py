@@ -56,3 +56,5 @@ def classes_seuillees():
     pre_tri(path_gformat)
     tri(path_pformat)
     tri(path_gformat)
+   
+classes_seuillees()
