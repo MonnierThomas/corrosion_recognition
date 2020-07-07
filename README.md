@@ -43,13 +43,21 @@ Il faut aussi créer trois batchs d'images : un d'entrainement, un de validation
 
 Plus tard, afin d'avoir un set de données avec plus d'images pour obtenir de meilleurs résultats, nous avons eu recours à une stratégie : utiliser les symétries sur les images qu'on avait déjà.
 
+Les images que nous avons utilisé sont accessibles au drive suivant : https://drive.google.com/drive/folders/1dI_T78aLbZ_ueEv7izd3NsuUUJRtyjtM?usp=sharing
+
 **Etape 3 : Utilisation du CNN**
 
-Après avoir codé le CNN et l'avoir testé sur un test basique (reconnaissance de carrés noirs avec deux classes - carrés noirs et carrés rouges -), nous avons procédé à plusieurs tests de reconnaissance de marques de corrosion sur nos images de test. Malheureusement, les résultats n'étaient pas forcément au rendez-vous. Les performances de l'algorithme n'étaient pas très bonnes (autour de 0.6 de précision) et certains tests classaient toutes les images de test en "corrosion".
+Après avoir codé le CNN (CNN.py) et l'avoir testé sur un test basique (reconnaissance de carrés noirs avec deux classes - carrés noirs et carrés rouges -), nous avons procédé à plusieurs tests de reconnaissance de marques de corrosion sur nos images de test. Malheureusement, les résultats n'étaient pas forcément au rendez-vous. Les performances de l'algorithme n'étaient pas très bonnes (autour de 0.6 de précision) et certains tests classaient toutes les images de test en "corrosion".
 
 C'est pour palier à ces problèmes que nous avons eu recours à la symétrisation des images, à la modification de la qualité des images, à la supression d'une couche (à cause de l'overfitting).
 
-Finalement, nous avons une précision de 0.7, ce qui, pour un CNN, est assez mauvais
+Finalement, nous avons une précision de 0.7, ce qui, pour un CNN, n'est pas forcément glorieux. Cependant, la qualité assez hasardeuse de notre database et la faible quantité de données que nous avons ne pouvaient pas donner meilleur résultat. 
 
+**Conclusion**
 
+Notre algorithme fonctionne. Il reste simplement à avoir une base de données avec quelques millions d'images professionnelles de matériaux corrodés et non corrodés utilisés par la start up pour avoir l'espoir d'obtenir une précision avoisinnant les 0.95.
+
+**Remerciements**
+
+Nous remercions chaleureusement Bertrand Duvivier et Christophe Lemerle pour leur soutien, leur aide hebdomadaire et la proposition de sujet qui nous a vraiment permis de découvrir et d'apprendre.
 
