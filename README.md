@@ -3,7 +3,7 @@ Projet Informatique Mines-Paristech
 
 # Contexte
 
-Notre projet d'informatique du second semestre nous a été proposé par deux industriels travaillant pour la start-up Di-Africa. Di-Africa est spécialisé notamment dans la maintenance de plateformes pétrolières sur les côtes africaines. Afin de palier au problème de corrosion des matériaux utilisés sur les plateformes et pour prévenir les réparations et les maintenances, Di-Africa a contacté les Mines de Paris afin d'écrire un algorithme permettant de traiter les images avec marques de corrosion.
+Notre projet d'informatique du second semestre nous a été proposé par deux industriels travaillant pour la start-up Di-Africa. Di-Africa est spécialisé notamment dans la maintenance de plateformes pétrolières sur les côtes africaines. Afin de pallier au problème de corrosion des matériaux utilisés sur les plateformes et pour prévenir les réparations et les maintenances, Di-Africa a contacté les Mines de Paris pour obtenir un moyen de détection automatique des marques de corrosion sur les matériaux.
 
 Notre groupe (Ambroise Favre, Charlotte de Mailly Nesle, Thomas Monnier) devait remplir deux objectifs :
 - traiter les images selon une classification binaire des matériaux (0 : non corrodé, 1 : corrodé)
@@ -27,7 +27,7 @@ Un algorithme supervisé comme le CNN paraît donc approprié, d'autant plus que
 
 **Etape 1 : obtention de la base de données - Image Scraping -**
 
-Afin de pouvoir utiliser l'algorithme CNN, il faut avoir un set de données pour pouvoir entraîner notre algorithme. Problème, Di-Africa n'a pas une base de données avec des images de corrosion et non corrosion. Il faut donc réussir à télécharger des images afin d'avoir notre propre database constitué d'environ 2 000 images (1 000 images de corrosion, 1 000 images de non corrosion). 
+Afin de pouvoir utiliser l'algorithme CNN, il faut avoir un set de données pour pouvoir entraîner notre algorithme. Problème, Di-Africa n'a pas une base de données avec des images de corrosion et non corrosion. Il faut donc réussir à télécharger des images d'Internet afin d'avoir notre propre database constitué d'environ 2 000 images (1 000 images de corrosion, 1 000 images de non corrosion). 
 
 Pour cela, nous avons utilisé un webdriver (présent dans Image Scraping, chromedriver.zip), le module Selenium (framework de test de navigateur web) et nous avons écrit un algorithme de téléchargement d'images par mots-clés à partir de Google Images (script_ruler.py).
 
@@ -41,23 +41,26 @@ Il faut aussi créer trois batchs d'images : un d'entrainement, un de validation
 - 80% des images vont dans entrainement et validation, respectivement répartis en 80% et 20%
 - 20% des images vont dans test
 
-Plus tard, afin d'avoir un set de données avec plus d'images pour obtenir de meilleurs résultats, nous avons eu recours à une stratégie : utiliser les symétries sur les images qu'on avait déjà.
+Plus tard, afin d'avoir un set de données avec plus d'images pour obtenir de meilleurs résultats, nous avons eu recours à une stratégie : symétriser nos images, ce qui nous a permis d'en avoir 4 fois plus.
 
 Les images que nous avons utilisé sont accessibles au drive suivant : https://drive.google.com/drive/folders/1dI_T78aLbZ_ueEv7izd3NsuUUJRtyjtM?usp=sharing
 
 **Etape 3 : Utilisation du CNN**
 
-Après avoir codé le CNN (CNN.py) et l'avoir testé sur un test basique (reconnaissance de carrés noirs avec deux classes - carrés noirs et carrés rouges -), nous avons procédé à plusieurs tests de reconnaissance de marques de corrosion sur nos images de test. Malheureusement, les résultats n'étaient pas forcément au rendez-vous. Les performances de l'algorithme n'étaient pas très bonnes (autour de 0.6 de précision) et certains tests classaient toutes les images de test en "corrosion".
+Après avoir codé le CNN (CNN.py) et l'avoir testé sur un test basique (reconnaissance de carrés noirs avec deux classes - carrés noirs et carrés rouges -), nous avons procédé à plusieurs tests de reconnaissance de marques de corrosion sur nos images de test. Malheureusement, les résultats n'étaient pas au rendez-vous. Les performances de l'algorithme n'étaient pas très bonnes (autour de 0.6 de précision) et certains tests classaient toutes les images de test en "corrosion".
 
-C'est pour palier à ces problèmes que nous avons eu recours à la symétrisation des images, à la modification de la qualité des images, à la supression d'une couche (à cause de l'overfitting).
+C'est pour pallier à ces problèmes que nous avons eu recours à la symétrisation des images, à la modification de la qualité des images, à la supression d'une couche (à cause de l'overfitting).
 
-Finalement, nous avons une précision de 0.7, ce qui, pour un CNN, n'est pas forcément glorieux. Cependant, la qualité assez hasardeuse de notre database et la faible quantité de données que nous avons ne pouvaient pas donner meilleur résultat. 
+Finalement, nous avons une précision de 0.7, ce qui n'est pas suffisant pour l'usage que veulent en faire nos encadrants. Un point positif tout de même: les résultats de notre dernier modèle montre que lorsqu'il dit qu'une image ne présente pas de traces de corrosion, on peut être sûrs qu'elle n'en présente pas, ce qui est plutôt positif et occasionne déjà un gain de temps pour les maintenances.
+De part notre manque d'images et la qualité variable de celles-ci, nous ne pourrons pas obtenir de meilleurs résultats.
 
 **Conclusion**
 
-Notre algorithme fonctionne. Il reste simplement à avoir une base de données avec quelques millions d'images professionnelles de matériaux corrodés et non corrodés utilisés par la start up pour avoir l'espoir d'obtenir une précision avoisinnant les 0.95.
+Notre algorithme fonctionne. Il reste simplement à avoir une base de données avec quelques millions d'images professionnelles de matériaux corrodés et non corrodés utilisés par la start up pour avoir l'espoir d'obtenir une précision avoisinant les 0.95.
 
 **Remerciements**
 
 Nous remercions chaleureusement Bertrand Duvivier et Christophe Lemerle pour leur soutien, leur aide hebdomadaire et la proposition de sujet qui nous a vraiment permis de découvrir et d'apprendre.
+
+Nous vous remontons ici le lien vers notre Drive, où vous pourrez trouver plus de détails sur nos démarches: https://drive.google.com/drive/folders/1dI_T78aLbZ_ueEv7izd3NsuUUJRtyjtM?usp=sharing
 
