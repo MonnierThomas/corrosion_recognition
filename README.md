@@ -1,5 +1,6 @@
-# Traitement d'images avec marques de corrosion : Di-Africa
-Projet Informatique Mines-Paristech
+# Image processing of pictures with corrosion marks
+
+> This GitHub repository is a project made in partnership with DiAfrica, and supervised by Mines Paris. We implemented a CNN in order to identify marks of corrosion on pictures of oil platforms.
 
 # Contexte
 
