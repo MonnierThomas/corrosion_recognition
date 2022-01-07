@@ -2,66 +2,109 @@
 
 > This GitHub repository is a project made in partnership with DiAfrica, and supervised by Mines Paris. We implemented a CNN in order to identify marks of corrosion on pictures of oil platforms.
 
-# Contexte
+# Table of Contents
 
-Notre projet d'informatique du second semestre nous a été proposé par deux industriels travaillant pour la start-up Di-Africa. Di-Africa est spécialisé notamment dans la maintenance de plateformes pétrolières sur les côtes africaines. Afin de pallier au problème de corrosion des matériaux utilisés sur les plateformes et pour prévenir les réparations et les maintenances, Di-Africa a contacté les Mines de Paris pour obtenir un moyen de détection automatique des marques de corrosion sur les matériaux.
+- [Introduction](#introduction)
+- [Methods](#methods)
+- - [Reasoning](#reasoning)
+- - [Image Scraping](#image-scraping)
+- - [Image Processing](#image-processing)
+- - [CNN Implementation](#cnn-implementation)
+- [Results](#results)
+- [Discussion](#discussion)
+- [Conclusion](#conclusion)
+- [Special Thanks](#special-thanks)
+- [References](#references)
 
-Notre groupe (Ambroise Favre, Charlotte de Mailly Nesle, Thomas Monnier) devait remplir deux objectifs :
-- traiter les images selon une classification binaire des matériaux (0 : non corrodé, 1 : corrodé)
-- quantifier le degré de corrosion du matériau
+# Introduction
 
-Malheureusement, le second objectif a très vite été écarté au profit du premier. En effet, quantifier le degré de corrosion d'un matériau à l'aide d'algorithmes de Machine Learning semble quasi-impossible étant donné le nombre de variables entrant en jeu. La plus évidente - le degré de corrosion d'un matériau dépend de la distance à laquelle on photographie ce dernier - nous a convaincu qu'il valait mieux se concentrer sur le premier objectif.
+Our second semester computer science project at Mines Paris was proposed to us by Bertrand Duvivier and Christophe Lemerle. They both work at DiAfrica, a start-up dealing with oil platforms on the African coast, and therefore interested in their maintenance. In order to solve the problem of corrosion of materials used on the platforms and to prevent expensive repairs and maintenance, DiAfrica contacted Mines Paris to obtain a means of automatic detection of corrosion marks on materials.
 
-# Etapes de résolution
+Our engineering group (Ambroise Favre, Charlotte de Mailly Nesle, Thomas Monnier) had two objectives:
+- to process the images according to a binary classification of the materials (0: not corroded, 1: corroded)
+- to quantify the degree of corrosion of the material
 
-**Etape 0 : réflexion**
+Unfortunately, the second objective was quickly discarded in favor of the first. Indeed, quantifying the degree of corrosion of a material using Machine Learning algorithms seems almost impossible given the number of variables involved. The most obvious one - the degree of corrosion of a material depends on the distance from which it is photographed - convinced us that it was better to concentrate on the first objective.
 
-Afin de pouvoir répondre à notre objectif, il a fallu savoir à quoi nous devions nous intéresser et répondre aux questions basiques : *A quel problème est-on confronté ? Quels algorithmes de Machine Learning pouvons-nous utiliser ? Quel est le choix le plus judicieux pour traiter les images ?*
+Thus, we chose to use Artificial Intelligence tools to detect corrosion marks on materials according to a binary classification.
 
-Malgré le nombre important d'algorithmes de Machine Learning qui sont exploités dans le milieu industriel, un nous a particulièrement intéressé : le CNN (Convolution Neural Network), le réseau de neurones à convolution. Pourquoi ?
+# Methods
 
-Nous avons affaire à :
-- un problème de classification à deux classes (non corrodé et corrodé)
-- un problème de traitement d'images 
+## Reasoning
 
-Un algorithme supervisé comme le CNN paraît donc approprié, d'autant plus que celui-ci est connu pour sa précision (que l'on évaluera par la mesure F1) très bonne.
+In order to meet our objective, we had to know what we needed to address and answer the following questions: 
 
-**Etape 1 : obtention de la base de données - Image Scraping -**
+> What problem are we facing? 
+> What Machine Learning algorithms can we use? 
+> What is the best choice to process the images?
 
-Afin de pouvoir utiliser l'algorithme CNN, il faut avoir un set de données pour pouvoir entraîner notre algorithme. Problème, Di-Africa n'a pas une base de données avec des images de corrosion et non corrosion. Il faut donc réussir à télécharger des images d'Internet afin d'avoir notre propre database constitué d'environ 2 000 images (1 000 images de corrosion, 1 000 images de non corrosion). 
+Despite the large number of Machine Learning algorithms that are used in industry, one in particular interested us: the CNN (Convolution Neural Network). Why?
 
-Pour cela, nous avons utilisé un webdriver (présent dans Image Scraping, chromedriver.zip), le module Selenium (framework de test de navigateur web) et nous avons écrit un algorithme de téléchargement d'images par mots-clés à partir de Google Images (script_ruler.py).
+We are dealing with :
+- a two-class classification problem (uncorroded and corroded)
+- an image processing problem 
 
-A partir de là, il a fallu faire face à des images non cohérentes (ne correspondant pas aux termes non corrosion et corrosion, des schémas, etc).
+A supervised algorithm like the CNN seems appropriate, especially since it is known for its accuracy (which we will evaluate by the F1-score).
 
-**Etape 2 : Traitement des Images**
+## Image Scraping
 
-Maintenant que nous avons notre database, nous avons dû formaté et dimensionné les images de manière à les avoir toutes de la même taille et de la même qualité pour pouvoir utiliser le CNN.
+Algorithm: `src/image_scraping/image_scraping.py`
 
-Il faut aussi créer trois batchs d'images : un d'entrainement, un de validation et un de test. Globalement, la répartition est la suivante :
-- 80% des images vont dans entrainement et validation, respectivement répartis en 80% et 20%
-- 20% des images vont dans test
+In order to use a CNN, we must have a dataset to train, test and validate our algorithm. Problem is, DiAfrica does not have a database with images of corroded and uncorroded materials. Besides, websites collecting datasets all over the globe such as Kaggle are missing corrosion / uncorrosion dataset. As such dataset is unavailable, we must therefore succeed in downloading images from the web in order to have our own database. The first approach was to retrieve an amount of data of about 2,000 images (1,000 images of corroded materials, 1,000 images of uncorroded materials). 
 
-Plus tard, afin d'avoir un set de données avec plus d'images pour obtenir de meilleurs résultats, nous avons eu recours à une stratégie : symétriser nos images, ce qui nous a permis d'en avoir 4 fois plus.
+To do so, we used a webdriver, the Selenium module and we wrote an algorithm to download images by keywords from Google Images (script_ruler.py). Among the keywords we used:
+- corrosion
+- corroded materials
+- corroded steel
+- steel
+- *lots of different metals*
 
-Les images que nous avons utilisé sont accessibles au drive suivant : https://drive.google.com/drive/folders/1dI_T78aLbZ_ueEv7izd3NsuUUJRtyjtM?usp=sharing
+The webdriver can be found in `source`.
 
-**Etape 3 : Utilisation du CNN**
+From there, we had to deal with inconsistent images (not matching the terms *uncorroded* and *corroded*, schematics, etc).
 
-Après avoir codé le CNN (CNN.py) et l'avoir testé sur un test basique (reconnaissance de carrés noirs avec deux classes - carrés noirs et carrés rouges -), nous avons procédé à plusieurs tests de reconnaissance de marques de corrosion sur nos images de test. Malheureusement, les résultats n'étaient pas au rendez-vous. Les performances de l'algorithme n'étaient pas très bonnes (autour de 0.6 de précision) et certains tests classaient toutes les images de test en "corrosion".
+## Image Processing
 
-C'est pour pallier à ces problèmes que nous avons eu recours à la symétrisation des images, à la modification de la qualité des images, à la supression d'une couche (à cause de l'overfitting).
+Algorithms: `src/image_processing/`
 
-Finalement, nous avons une précision de 0.7, ce qui n'est pas suffisant pour l'usage que veulent en faire nos encadrants. Un point positif tout de même: les résultats de notre dernier modèle montre que lorsqu'il dit qu'une image ne présente pas de traces de corrosion, on peut être sûrs qu'elle n'en présente pas, ce qui est plutôt positif et occasionne déjà un gain de temps pour les maintenances.
-De part notre manque d'images et la qualité variable de celles-ci, nous ne pourrons pas obtenir de meilleurs résultats.
+Now that we have our database, we had to format and size the images in order to have them all of the same quality and size in order to be able to use the CNN.
 
-**Conclusion**
+We also have to create three batches of images: one for training, one for validation and one for testing. Overall, the distribution is as follows:
+- 80% of the images go to training and validation, respectively divided into 80% and 20%.
+- 20% of the images go to testing
 
-Notre algorithme fonctionne. Il reste simplement à avoir une base de données avec quelques millions d'images professionnelles de matériaux corrodés et non corrodés utilisés par la start up pour avoir l'espoir d'obtenir une précision avoisinant les 0.95.
+However, a CNN needs large amount of data to be efficient. To enhance our dataset (which consists of only 2,000 images), we used common strategies in Machine Learning: symmetrize our images, which allowed us to have 4 times more data than before.
 
-**Remerciements**
+## CNN Implementation
 
-Nous remercions chaleureusement Bertrand Duvivier et Christophe Lemerle pour leur soutien, leur aide hebdomadaire et la proposition de sujet qui nous a vraiment permis de découvrir et d'apprendre.
+Algorithm: `src/cnn.py`
+
+After coding the CNN, we proceeded to several corrosion mark recognition tests on our test images. Unfortunately, the results were not good. The performance of the algorithm was not very good (around 0.6 of accuracy). Lots of parameters could actually be changed to improve the results of the CNN. To overcome these problems, we resorted to symmetrizing the images, modifying the quality of the images, and removing a layer (because of overfitting).
+
+# Results
+
+Finally, despite spending some time on fine-tuning the model, we obtained a F1-score of 0.7, which is unfortunately not enough for the use that our employers want to make of it. 
+
+One positive point: the model has a high recall. Indeed, the results of our last model show that when it says that an image does not show traces of corrosion, we can be sure that the material does not have any, which is rather positive and already saves time for maintenance.
+
+# Discussion
+
+We encountered several issues throughout our project that may explain the disappointing F1-score:
+- the lack of a labelled dataset of corroded / uncorroded materials
+- the low amount of data that we used for training and validation
+- the low quality of the data we used
+- the little time spent on modyfing hyperparameters and tuning
+
+# Conclusion
+
+Our algorithm works. All that remains is to have a database with a few million professional images of corroded and non-corroded materials used by the start-up to have any hope of obtaining an accuracy close to 0.95.
+
+# Special Thanks
+
+We warmly thank Bertrand Duvivier and Christophe Lemerle for their support, their weekly help and the subject proposal which really allowed us to discover and learn more about Deep Learning and Image Processing.
 
 Nous vous remontons ici le lien vers notre Drive, où vous pourrez trouver plus de détails sur nos démarches: https://drive.google.com/drive/folders/1dI_T78aLbZ_ueEv7izd3NsuUUJRtyjtM?usp=sharing
 
+# References
+
+[Project Instructions](topic_description/)
