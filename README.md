@@ -2,6 +2,10 @@
 
 > This GitHub repository is a project made in partnership with DI Africa, and supervised by Mines Paris. We implemented a CNN in order to identify marks of corrosion on pictures of oil platforms.
 
+<p align="center">
+  <img src="https://media-exp1.licdn.com/dms/image/C560BAQGsupEBelRQfA/company-logo_200_200/0/1584626088075?e=2159024400&v=beta&t=1rQWcrc8ncZZ0BupAiuaNhz2SUHiJCfNdWAdu9ScGxw" />
+</p>
+
 # Table of Contents
 
 - [Introduction](#introduction)
@@ -33,7 +37,7 @@ Thus, we chose to use Artificial Intelligence tools to detect corrosion marks on
 
 > Extract from the topic description
 
-DI Africa, Republic of Mauritius, provides international technical assistance, i.e. DI Africa send engineers and technicians to their clients' industrial sites. Their core business is oil & gas in Africa and clients' sites are often offshore platforms. We also intervene in other sectors such as mining, energy, nuclear, construction or heavy industry in the broad sense or on other continents. We have been in existence since November 2019 and are currently established in Mauritius and Gabon, with other countries being opened. Two former students from Mines Paris, including Bertrand Duvivier, are co-founders.
+[DI Africa](https://www.linkedin.com/company/di-africa) provides international technical assistance, i.e. DI Africa send engineers and technicians to their clients' industrial sites. Their core business is oil & gas in Africa and clients' sites are often offshore platforms. We also intervene in other sectors such as mining, energy, nuclear, construction or heavy industry in the broad sense or on other continents. We have been in existence since November 2019 and are currently established in Mauritius and Gabon, with other countries being opened. Two former students from Mines Paris, including Bertrand Duvivier, are co-founders.
 
 # Methods
 
