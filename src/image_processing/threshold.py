@@ -1,7 +1,7 @@
 from os import listdir, makedirs
 from os.path import isfile, join
 from PIL import Image
-from traitement_images import dimension, formatage, symetries, pre_tri, tri
+from image_processing.image_processing import dimension, formatage, symetries, pre_tri, tri
 from math import sqrt
 import numpy as np
 

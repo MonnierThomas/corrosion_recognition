@@ -7,10 +7,10 @@ def join_photos(path1, path2):
     """Enregistre les images classées par dossier dans un seul et même dossier en les renommant suivant leur dossier d'origine
     Entrée: path1: chaîne de caractères, chemin vers les données brutes classées par mot-clé
               path2: chaîne de caractères, chemin vers le dossier où on enregistre toutes les images ensembles"""
-    dossiers = [f for f in listdir(path_depart)]
+    dossiers = [f for f in listdir(path1)]
     for dossier in dossiers:
         if dossier != ".DS_Store":
-            path = path_depart+"/"+dossier
+            path = path1+"/"+dossier
             images = [f for f in listdir(path) if isfile(join(path,f))]
             if len(images) <=1:
                 #le dossier contient d'autres dossiers
@@ -24,14 +24,14 @@ def join_photos(path1, path2):
                                 img = Image.open(path_bis+"/"+image)
                                 if img.mode != 'RGB':
                                     img = img.convert('RGB')
-                                img.save(path_arrivee + "/" + fichier + image , quality = 95)
+                                img.save(path2 + "/" + fichier + image , quality = 95)
             else:
                 for image in images:
                     if image != ".DS_Store":
                             img = Image.open(path+"/"+image)
                             if img.mode != 'RGB':
                                 img = img.convert('RGB')
-                            img.save(path_arrivee + "/" + dossier + image , quality = 95)
+                            img.save(path2 + "/" + dossier + image , quality = 95)
 
 def dimension(chemin):
     """Entrée: chemin vers le dossier d'images (chaîne de caractères)
@@ -113,12 +113,12 @@ def symetries(path):
 def is_corr(photo):
     """indique la présence de "corr" dans une chaîne de caractère
     Entrée: chaîne de caractère"""
-        i = 0
-        while i < len(photo):
-            if [photo[i+k] for k in range(4)] == ["c", "o", "r", "r"]:
-                return(True)
-            i = i +1
-        return(False)
+    i = 0
+    while i < len(photo):
+        if [photo[i+k] for k in range(4)] == ["c", "o", "r", "r"]:
+            return(True)
+        i = i +1
+    return(False)
         
 def pre_tri(path):
     """Trie les images d'un dossier en 2 sous-dossier: CORROSION ET NON CORROSION, suivant leur nom
