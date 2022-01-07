@@ -50,7 +50,7 @@ A supervised algorithm like the CNN seems appropriate, especially since it is kn
 
 Algorithm: `src/image_scraping/image_scraping.py`
 
-In order to use a CNN, we must have a dataset to train, test and validate our algorithm. Problem is, DiAfrica does not have a database with images of corroded and uncorroded materials. Besides, websites collecting datasets all over the globe such as Kaggle are missing corrosion / uncorrosion dataset. As such dataset is unavailable, we must therefore succeed in downloading images from the web in order to have our own database. The first approach was to retrieve an amount of data of about 2,000 images (1,000 images of corroded materials, 1,000 images of uncorroded materials). 
+In order to use a CNN, we must have a dataset to train, test and validate our algorithm. Problem is, DiAfrica does not have a database with images of corroded and uncorroded materials. Besides, websites collecting datasets all over the globe such as Kaggle are missing corrosion / uncorrosion dataset. As such dataset is unavailable, we must therefore succeed in downloading images from the web in order to have our own database. The first approach was to retrieve an amount of data of about 2,000 images (1,000 images of corroded materials, 1,000 images of uncorroded materials). Sadly, we are not able to share our collected dataset for obvious private reasons.
 
 To do so, we used a webdriver, the Selenium module and we wrote an algorithm to download images by keywords from Google Images (script_ruler.py). Among the keywords we used:
 - corrosion
@@ -102,8 +102,6 @@ Our algorithm works. All that remains is to have a database with a few million p
 # Special Thanks
 
 We warmly thank Bertrand Duvivier and Christophe Lemerle for their support, their weekly help and the subject proposal which really allowed us to discover and learn more about Deep Learning and Image Processing.
-
-Nous vous remontons ici le lien vers notre Drive, où vous pourrez trouver plus de détails sur nos démarches: https://drive.google.com/drive/folders/1dI_T78aLbZ_ueEv7izd3NsuUUJRtyjtM?usp=sharing
 
 # References
 
