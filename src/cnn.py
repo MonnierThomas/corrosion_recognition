@@ -7,29 +7,30 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = "" # Chemin des images d'entraînement
-valid_dir = "" # Chemin des images de validation
-test_dir = ""  # Chemin des images de test
-test_dir2 = "" # Chemin des images de test 2
-save_dir = "26"
+train = "" # training path
+valid = "" # validation path
+test = ""  # test path 1
+test2 = "" # test path 2
+save = "26"
 
-# Forme et propriétés du modèle utilisé
+# Model's parameters
 batch_size = 20
 IMG_HEIGHT, IMG_WIDTH = 256, 256
 total_val = 166
 epochs = 20
 total_train = 699
 
-def data_preparation(train_dir = train_dir, valid_dir = valid_dir):
-	"""Formate l'image en tenseurs à virgule flottante pré-traités de manière appropriée avant de les alimenter sur le réseau de neurones"""
+def data_preparation(train = train, valid = valid):
+	"""Formats the image into appropriately pre-processed floating point tensors before feeding them to the neural network"""
+
 	train_image_generator = ImageDataGenerator(rescale=1)
 	train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
-															   directory=train_dir,
+															   directory=train,
 															   shuffle=True,
 															   target_size=(IMG_HEIGHT, IMG_WIDTH),
 															   class_mode='categorical')
 	valid_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
-															   directory=valid_dir,
+															   directory=valid,
 															   shuffle=True,
 															   target_size=(IMG_HEIGHT, IMG_WIDTH),
 															   class_mode='categorical')
@@ -38,7 +39,8 @@ def data_preparation(train_dir = train_dir, valid_dir = valid_dir):
 
 
 def model_creation():
-    """Calcule le modèle à l'aide du CNN de Keras"""
+    """Calculates the model using Keras' CNN"""
+
     model = Sequential()
     
     model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)))
@@ -60,7 +62,7 @@ def model_creation():
 
 
 def model_training(model, train_data_gen, valid_data_gen):
-	"""Entraîne le modèle"""
+	"""Trains the model"""
 
 	history = model.fit_generator(train_data_gen,
 								steps_per_epoch=total_train // batch_size,
@@ -72,20 +74,19 @@ def model_training(model, train_data_gen, valid_data_gen):
 
 	return history
 
-def model_saving(model, save_dir = save_dir):
-	"""Sauvegarde le modèle"""
+def model_saving(model, save = save):
+	"""Saves the model"""
 
 	model_json = model.to_json() # serialize model to JSON
 	with open("model.json", "w") as json_file:
 		json_file.write(model_json)
 	
-	model.save_weights(save_dir+"model.h5") # serialize weights to HDF5
+	model.save_weights(save+"model.h5") # serialize weights to HDF5
 	print("Saved model to disk")
-	return 0
 
 
-def model_loading(save_dir = save_dir):
-	"""Charge le modèle"""
+def model_loading(save = save):
+	"""Loads the model"""
 
 	json_file = open('model.json', 'r') # load json and create model
 	loaded_model_json = json_file.read()
@@ -96,11 +97,11 @@ def model_loading(save_dir = save_dir):
 	print("Loaded model from disk")
 	return loaded_model
 
-def prediction(model, test_dir = test_dir):
-	"""Test le précédent modèle entraîné et retourne les prédictions en probabilités"""
+def prediction(model, test = test):
+	"""Outputs predictions after testing the trained model"""
 	test_image_generator = ImageDataGenerator(rescale=1)
 	test_data_gen = test_image_generator.flow_from_directory(batch_size=batch_size,
-														  directory=test_dir,
+														  directory=test,
 														  shuffle=False,
                                                           target_size=(IMG_HEIGHT, IMG_WIDTH),
 														  class_mode='categorical')
@@ -117,21 +118,21 @@ def prediction(model, test_dir = test_dir):
 
 
 def conf_matrix(predic, classes):
-	"""Retourne la matrice de confusion"""
+	"""Returns the confusion matrix"""
 	pred = [np.argmax(i) for i in predic]
 	cm = confusion_matrix(classes, pred)
 	return cm
 
 
 def info_plotting(cm, history):
-	"""Trace la précision du modèle et la matrice de confusion"""
+	"""Plots model's accuracy and loss, as well as the confusion matrix"""
 	fig, ax = plt.subplots()
 	print(cm)
 	im = ax.imshow(cm, interpolation='nearest', cmap = plt.cm.Blues)
 	ax.figure.colorbar(im, ax=ax)
 	plt.show()
 	
-	# Trace les valeurs de précision d'entraînement et de validation
+	# Plots training and validation accuracies
 	plt.plot(history.history['accuracy'])
 	plt.plot(history.history['val_accuracy'])
 	plt.title('Model accuracy')
@@ -141,7 +142,7 @@ def info_plotting(cm, history):
 	plt.show()
 
 
-	# Trace les valeurs de perte d'entraînement et de validation
+	# Plots training and validation losses
 	plt.plot(history.history['loss'])
 	plt.plot(history.history['val_loss'])
 	plt.title('Model loss')
@@ -150,24 +151,9 @@ def info_plotting(cm, history):
 	plt.legend(['Train', 'Validate'], loc='lower right')
 	plt.show()
 
-	return 0
 
-
-def main ():
-    global history
-    train_data_gen, valid_data_gen = data_preparation()
-    model = model_creation()
-    history = model_training(model, train_data_gen, valid_data_gen)
-    model.summary()
-    model_saving(model)
-    predic, test_data_gen = prediction(model)
-    cm = conf_matrix(predic, test_data_gen.classes)
-    info_plotting(cm, history)
-    return (predic)
-
-
-def predic_test(test_path=test_dir):
-    """Prédiction d'un batch de test et retourne la matrice de confusion"""
+def predict_test(test_path=test):
+    """Predicts a test batch and returns the confusion matrix"""
     test_image_generator = ImageDataGenerator(rescale=1)
     model = model_loading()
     test_data_gen = test_image_generator.flow_from_directory(batch_size=batch_size,
@@ -188,15 +174,15 @@ def predic_test(test_path=test_dir):
     im = ax.imshow(cm, interpolation='nearest', cmap = plt.cm.Blues)
     ax.figure.colorbar(im, ax=ax)
     plt.show()
-    return(0)
+    return 0
 
 
-def predic_non_test(test_path = test_dir2):
-    """Prédiction d'un batch inconnu"""
+def predict_non_test(test_path = test2):
+    """Predicts an unknown test"""
     l = model_loading()
     train_image_generator = ImageDataGenerator(rescale=1)
     test_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
-															 directory=test_dir2,
+															 directory=test2,
 															 shuffle=True,
 															 target_size=(IMG_HEIGHT, IMG_WIDTH),
 															 class_mode='categorical')
@@ -207,6 +193,17 @@ def predic_non_test(test_path = test_dir2):
 									 workers=1, 
 									 use_multiprocessing=False, 
 									 verbose=1)
-    return(predic)
+    return predic
 
 
+if __name__ == '__main__' :
+    global history
+    train_data_gen, valid_data_gen = data_preparation()
+    model = model_creation()
+    history = model_training(model, train_data_gen, valid_data_gen)
+    model.summary()
+    model_saving(model)
+    predic, test_data_gen = prediction(model)
+    cm = conf_matrix(predic, test_data_gen.classes)
+    info_plotting(cm, history)
+    print(predic)

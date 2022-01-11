@@ -3,75 +3,80 @@ from os.path import isfile, join
 from PIL import Image
 
 
-def join_photos(path1, path2):
-    """Enregistre les images classées par dossier dans un seul et même dossier en les renommant suivant leur dossier d'origine
-    Entrée: path1: chaîne de caractères, chemin vers les données brutes classées par mot-clé
-              path2: chaîne de caractères, chemin vers le dossier où on enregistre toutes les images ensembles"""
-    dossiers = [f for f in listdir(path1)]
-    for dossier in dossiers:
-        if dossier != ".DS_Store":
-            path = path1+"/"+dossier
+def join_images(path1, path2):
+    """
+    Saves the images sorted by folder in a single folder, renaming them according to their original folder
+    Input: path1: string, path to the raw data sorted by keyword
+           path2: string, path to the folder where we save all the images together
+    """
+    folders = [f for f in listdir(path1)]
+    for folder in folders:
+        if folder != ".DS_Store":
+            path = path1+"/"+folder
             images = [f for f in listdir(path) if isfile(join(path,f))]
             if len(images) <=1:
-                #le dossier contient d'autres dossiers
-                sous_dossiers = [f for f in listdir(path)]
-                for fichier in sous_dossiers:
-                    if fichier != ".DS_Store":
-                        path_bis = path + "/" + fichier
+                sub_folders = [f for f in listdir(path)]
+                for file in sub_folders:
+                    if file != ".DS_Store":
+                        path_bis = path + "/" + file
                         images = [f for f in listdir(path_bis) if isfile(join(path_bis,f))]
                         for image in images:
                             if image != ".DS_Store":
                                 img = Image.open(path_bis+"/"+image)
                                 if img.mode != 'RGB':
                                     img = img.convert('RGB')
-                                img.save(path2 + "/" + fichier + image , quality = 95)
+                                img.save(path2 + "/" + file + image , quality = 95)
             else:
                 for image in images:
                     if image != ".DS_Store":
                             img = Image.open(path+"/"+image)
                             if img.mode != 'RGB':
                                 img = img.convert('RGB')
-                            img.save(path2 + "/" + dossier + image , quality = 95)
+                            img.save(path2 + "/" + folder + image , quality = 95)
 
-def dimension(chemin):
-    """Entrée: chemin vers le dossier d'images (chaîne de caractères)
-    Sortie: liste des largeurs, hauteurs et tailles des images en pixels classées par ordre croissant"""
+def dimension(path):
+    """
+    Input:  path of the image folder (string)
+    Output: list of widths, heights and sizes of the images in pixels sorted in ascending order
+    """
     W = []
-    #liste des largeurs
     H = []
-    #liste des hauteurs
-    T = []
-    #liste des tailles
-    fichiers = [f for f in listdir(chemin) if isfile(join(chemin,f))]
-    for photo in fichiers:
-        if photo != ".DS_Store":
-            img = Image.open(chemin+"/"+photo)
+    S = []
+    files = [f for f in listdir(path) if isfile(join(path,f))]
+    for image in files:
+        if image != ".DS_Store":
+            img = Image.open(path+"/"+image)
             (w, h) = img.size
             W.append(w)
             H.append(h)
-            T.append(w*h)
+            S.append(w*h)
     #on veut maintenant les trier dans l'ordre croissant
     W = sorted(W)
     H = sorted(H)
-    return(W, H, T)
+    return(W, H, S)
 
-def formatage(taille, path1, path2):
-    """Formate notre ensemble d'images brutes et les met à la taille souhaitée
-    Entrée: taille: entier
-            path1: chaîne de caractères, dossier d'images brutes
-            path2: chaîne de caractères, dossier d'images formatées"""
-    fichiers = [f for f in listdir(path1) if isfile(join(path1, f))]       
-    for photo in fichiers:
-        if photo!=".DS_Store":
-            nv_nom = "nouveau" +f"{photo}"
-            image = Image.open(path1 +"/"+ photo)
-            image = image.resize(taille, Image.ANTIALIAS)
+def formatage(size, path1, path2):
+    """
+    Formats our raw image set and set it to the desired size
+    Input: size: integer
+           path1: string, folder of raw images
+           path2: string, formatted images folder
+    """
+    files = [f for f in listdir(path1) if isfile(join(path1, f))]       
+    for image in files:
+        if image!=".DS_Store":
+            nv_nom = "new" +f"{image}"
+            image = Image.open(path1 +"/"+ image)
+            image = image.resize(size, Image.ANTIALIAS)
             image.save(path2 + "/" + nv_nom, quality=95)
 
-def symetrie_horizontale(path1, path2):
-    """Enregistre la symétrie axiale horizontale d'une image
-        Entrée: path1, chaîne de caractère, image de départ
-                path2, chaîne de caractère, chemin où on enregistre l'image d'arrivée"""
+def horizontal_symmetry(path1, path2):
+    """
+    Stores the horizontal axial symmetry of an image
+        
+    Input: path1, string, start image
+           path2, string, path where you save the arrival image
+    """
     image = Image.open(path1)
     l, h = image.size
     image_sym = Image.new("RGB", (l, h))
@@ -82,10 +87,13 @@ def symetrie_horizontale(path1, path2):
             image_sym.putpixel((i, h-1-j), p)    
     image_sym.save(path2)
 
-def symetrie_verticale(path1, path2):
-    """Enregistre la symétrie axiale verticale d'une image
-        Entrée: path1, chaîne de caractère, image de départ
-                path2, chaîne de caractère, chemin où on enregistre l'image d'arrivée"""
+def vertical_symmetry(path1, path2):
+    """
+    Stores the vertical axial symmetry of an image
+    
+    Input: path1, string, start image
+           path2, string, path where you save the final image
+    """
     image = Image.open(path1)
     l, h = image.size
     image_sym = Image.new("RGB", (l, h))    
@@ -96,110 +104,112 @@ def symetrie_verticale(path1, path2):
     image_sym.save(path2)
     
 
-def symetries(path):
-    """Enregistre les symétries axiales verticales et horizontales de l'ensemble des images d'un dossier dans ce même dossier
-    Entrée: dossier d'images, chaîne de caractères"""
-    fichiers = [f for f in listdir(path) if isfile(join(path, f))]
-    for photo in fichiers:
-        if photo != ".DS_Store":
-            path1 = path + "/" + photo
-            path2 = path + "/" + "symh" + photo
-            path3 = path + "/" + "symv" + photo
-            symetrie_horizontale(path1, path2)
-            symetrie_verticale(path1, path3)
-            symetrie_verticale(path2, path3)
+def symmetries(path):
+    """
+    Saves the vertical and horizontal axial symmetries of all the images in a folder to the same folder
+    Input: image folder, string
+    """
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    for image in files:
+        if image != ".DS_Store":
+            path1 = path + "/" + image
+            path2 = path + "/" + "symh" + image
+            path3 = path + "/" + "symv" + image
+            horizontal_symmetry(path1, path2)
+            vertical_symmetry(path1, path3)
+            vertical_symmetry(path2, path3)
             
 
-def is_corr(photo):
-    """indique la présence de "corr" dans une chaîne de caractère
-    Entrée: chaîne de caractère"""
+def is_corr(image):
+    """
+    Indicates the presence of "corr" in a string
+    Input: string
+    """
     i = 0
-    while i < len(photo):
-        if [photo[i+k] for k in range(4)] == ["c", "o", "r", "r"]:
+    while i < len(image):
+        if [image[i+k] for k in range(4)] == ["c", "o", "r", "r"]:
             return(True)
         i = i +1
     return(False)
         
 def pre_tri(path):
-    """Trie les images d'un dossier en 2 sous-dossier: CORROSION ET NON CORROSION, suivant leur nom
-    Entrée: dossier d'images, chaîne de caractères"""
+    """
+    Sorts the images of a folder into 2 subfolders: CORROSION and UNCORROSION, according to their name
+    Input: image folder, string
+    """
     path_corrosion = path + "/" + "CORROSION"
-    path_non_corr = path + "/" + "NON CORROSION"
+    path_non_corr = path + "/" + "UNCORROSION"
     makedirs(path_corrosion)
     makedirs(path_non_corr)
-    fichiers = [f for f in listdir(path) if isfile(join(path, f))]
-    for photo in fichiers:
-        if photo != ".DS_Store":
-            image = Image.open(path + "/" + photo)
-            if is_corr(photo):
-                image.save(path_corrosion + "/" + photo)
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    for image in files:
+        if image != ".DS_Store":
+            image = Image.open(path + "/" + image)
+            if is_corr(image):
+                image.save(path_corrosion + "/" + image)
             else:
-                image.save(path_non_corr + "/" + photo)
-            remove(path + "/" + photo)
+                image.save(path_non_corr + "/" + image)
+            remove(path + "/" + image)
         
 
 
 def tri(path):
-    """Répartit chaque set d'images (CORROSION ET NON CORROSION) en trois ensembles: Entrainement (7/8 environ), Validation (1/8 environ) et Test (1/100 environ)
-    Entrée: dossier d'iamges (qui contient les sous-dossiers CORROSION et NON CORROSION, chaîne de caractères"""
-    path_entrain = path + "/" + "Entrainement"
-    path_validation = path + "/" + "Validation"
-    path_test = path + "/" + "Test"
+    """
+    Divides each set of images (CORROSION and UNCORROSION) into three sets: Training (about 7/8), Validation (about 1/8) and Test (about 1/100)
+    Input: images folder (which contains the CORROSION and UNCORROSION subfolders, string
+    """
+    train = path + "/" + "Training"
+    validation = path + "/" + "Validation"
+    test = path + "/" + "Test"
     path_corrosion = path + "/CORROSION"
-    path_non_corr = path + "/NON CORROSION"
+    path_non_corr = path + "/UNCORROSION"
     
-    makedirs(path_entrain)
-    #contiendra environ 7/8 de nos images
-    makedirs(path_validation)
-    #contiendra environ 1/8 de nos images
-    makedirs(path_test)
-    #contiendra environ 1/100 des images
+    makedirs(train)
+    makedirs(validation)
+    makedirs(test)
     
-    #on s'occupe d'abord de la corrosion
-    makedirs(path_entrain + "/" + "corrosion")
-    makedirs(path_validation + "/" + "corrosion")
-    makedirs(path_test + "/" + "corrosion")
-    fichiers = [f for f in listdir(path_corrosion)]
+    # CORROSION
+    makedirs(train + "/" + "corrosion")
+    makedirs(validation + "/" + "corrosion")
+    makedirs(test + "/" + "corrosion")
+    files = [f for f in listdir(path_corrosion)]
     i = 1
-    for photo in fichiers:
-        if photo != ".DS_Store":
-            image = Image.open(path_corrosion + "/" + photo)
+    for image in files:
+        if image != ".DS_Store":
+            image = Image.open(path_corrosion + "/" + image)
             if i % 100 == 0:
-                image.save(path_test + "/" + "corrosion" + "/" + photo, quality=95)
+                image.save(test + "/" + "corrosion" + "/" + image, quality=95)
             elif i % 8 != 0:
-                image.save(path_entrain + "/" + "corrosion" + "/" + photo, quality=95)
+                image.save(train + "/" + "corrosion" + "/" + image, quality=95)
             else:
-                image.save(path_validation + "/" + "corrosion" + "/" + photo, quality=95)
+                image.save(validation + "/" + "corrosion" + "/" + image, quality=95)
             i = i + 1
     
-    #non corrosion
-    makedirs(path_entrain + "/" + "non corrosion")
-    makedirs(path_validation + "/" + "non corrosion")
-    makedirs(path_test + "/" + "non corrosion")
-    fichiers = [f for f in listdir(path_non_corr)]
+    # UNCORROSION
+    makedirs(train + "/" + "uncorrosion")
+    makedirs(validation + "/" + "uncorrosion")
+    makedirs(test + "/" + "uncorrosion")
+    files = [f for f in listdir(path_non_corr)]
     i = 1
-    for photo in fichiers:
-        if photo != ".DS_Store":
-            image = Image.open(path_non_corr + "/" + photo)
+    for image in files:
+        if image != ".DS_Store":
+            image = Image.open(path_non_corr + "/" + image)
             if i % 100 == 0:
-                image.save(path_test + "/" + "non corrosion" + "/" + photo, quality=95)
+                image.save(test + "/" + "uncorrosion" + "/" + image, quality=95)
             elif i % 8 != 0:
-                image.save(path_entrain + "/" + "non corrosion" + "/" + photo, quality=95)
+                image.save(train + "/" + "uncorrosion" + "/" + image, quality=95)
             else:
-                image.save(path_validation + "/" + "non corrosion" + "/" + photo, quality=95)
+                image.save(validation + "/" + "uncorrosion" + "/" + image, quality=95)
             i = i+1
             
 
-def main():
-    path_dossiers = #le chemin où sont enregistrées nos images brutes par dossiers
-    path_brutes = #le chemin où on veut mettre nos images brutes ensembles
-    path_formatees = #le chemin où on veut mettre nos images formatées et où on trouvera les dossiers utiles
-    taille = #la taille choisie après étude des dimensions de l'ensemble d'images brutes
-    join_photos(path_dossiers, path_brutes)
-    formatage(taille, path_brutes, path_formatees)
-    symetries(path_formatees)
-    pre_tri(path_formatees)
-    tri(path_formatees)
-
-    
-main()
+if __name__ == '__main__' :
+    folders = # raw data by folders
+    raw = # raw data assembled
+    output = # formated data
+    size = # size chosen
+    join_images(folders, raw)
+    formatage(size, raw, output)
+    symmetries(output)
+    pre_tri(output)
+    tri(output)

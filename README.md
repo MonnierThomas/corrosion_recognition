@@ -70,7 +70,30 @@ To do so, we used a webdriver, the Selenium module and we wrote an algorithm to 
 - steel
 - *lots of different metals*
 
-The webdriver can be found in [src/image_scraping/chromedriver.zip](src/image_scraping/chromedriver.zip).
+The webdriver can be found in [src/image_scraping/chromedriver_linux64.zip](src/image_scraping/chromedriver_linux64.zip).
+Careful: You should use a webdriver that fits your Chrome version. Find all chromedriver versions [here](https://chromedriver.chromium.org/)
+
+Then, follow these steps:
+```
+unzip chromedriver_linux64.zip
+sudo mv chromedriver /usr/bin/chromedriver
+sudo chown root:root /usr/bin/chromedriver
+sudo chmod +x /usr/bin/chromedriver
+```
+
+Check if your chromedriver has correctly been installed and ready to use:
+`chromedriver --version`
+
+To use the script:
+```
+usage: image_scraping.py [-h] -k KEYWORDS [KEYWORDS ...]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -k KEYWORDS [KEYWORDS ...], --keywords KEYWORDS [KEYWORDS ...]
+                        keywords
+```
+For example: `python3 image_scraping.py -k 'corroded steel' 'corrosion'`
 
 From there, we had to deal with inconsistent images (not matching the terms *uncorroded* and *corroded*, schematics, etc).
 

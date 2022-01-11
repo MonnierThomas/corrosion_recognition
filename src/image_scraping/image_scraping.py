@@ -2,23 +2,28 @@ from selenium import webdriver
 import os
 import requests
 import shutil
+import argparse
+from selenium.webdriver.chrome.options import Options
 
-def get_url(searchterms):
-    '''Obtient l'URL des images de Google Images pour chaque mot-clé compris dans la liste des mots-clés
-    
-    Input : searchterms : liste de chaines de caractère correspondant aux mots clés
-    
-    Output : imges : liste de chaines de caractère correspondant aux URL des images
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+
+def get_url(searchterm):
     '''
+    Gets Google Images' URL for one keyword in the keyword list
     
-    for searchterm in searchterms:
-        url = "https://www.google.co.in/search?q="+searchterm+"&source=lnms&tbm=isch"
-        browser = webdriver.Chrome()#insert path to chromedriver inside parentheses
-        browser.get(url)
-        img_count = 0
-        extensions = { "jpg", "jpeg", "png", "gif" }
-        if not os.path.exists(searchterm):
-            os.mkdir(searchterm)
+    Input : searchterms : list of strings corresponding to the keywords
+    Output : imges : list of strings corresponding to the URLs of the images
+    '''
+
+    url = "https://www.google.co.in/search?q="+searchterm+"&source=lnms&tbm=isch"
+    browser = webdriver.Chrome('/usr/bin/chromedriver', chrome_options=chrome_options) # insert path to chromedriver inside parentheses
+    browser.get(url)
+    img_count = 0
+    extensions = { "jpg", "jpeg", "png", "gif" }
+    if not os.path.exists(searchterm):
+        os.mkdir(searchterm)
     
     for _ in range(500):
         browser.execute_script("window.scrollBy(0,10000)")
@@ -32,30 +37,39 @@ def get_url(searchterms):
     
     
     
-def download_image(image_url, i):
-    ''' Télécharge les images
+def download_image(searchterm, image_url, i):
+    '''
+    Downloads the images
     
-    Input : image_url : chaine de caractère
+    Input : image_url : string
             i : int
     '''
-    # Ouvre l'URL de l'image, définis le flux sur Vrai et retourne le contenu du flux
+    # Opens the URL of the image, sets the stream to True and returns the content of the stream
     resp = requests.get(image_url, stream=True)
-    # Ouvre un fichier local grâce à 'wb'
-    local_file = open(f'{i}.jpg', 'wb')
-    # Définis decode_content comme Vrai, sinon la taille de l'image téléchargée serait de 0
+    # Opens local file
+    local_file = open(f'{searchterm}/{i}.jpg', 'wb')
+    # Defines decode_content as True to prevent image size equals to 0
     resp.raw.decode_content = True
-    # Copie les données brutes du flux de réponses dans un fichier image local
+    # Copies raw data in local file
     shutil.copyfileobj(resp.raw, local_file)
-    # Supprimez l'objet de réponse d'URL d'image
+    # Deletes the image URL response object
     del resp
     
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-k", "--keywords",
+                        help="keywords",
+                        nargs="+",
+                        required=True)
+    args = parser.parse_args()
+
+    searchterms = []
+    for keyword in args.keywords:
+        searchterms.append(keyword)
     
-    
-def main():
-    searchterms = [] # Liste des mots-clés souhaités
-    imges = get_url(searchterms)
-    for i, image_url in enumerate(imges):
-        download_image(image_url, i)
-        
-        
-main()
+    for searchterm in searchterms:
+        imges = get_url(searchterm)
+
+        for i, image_url in enumerate(imges):
+            download_image(searchterm, image_url, i)
